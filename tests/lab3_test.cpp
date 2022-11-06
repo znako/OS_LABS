@@ -5,7 +5,7 @@
 #include <chrono>
 
 namespace {
-    std::vector<int> GenerateArray(int length){
+    std::vector<int> GenerateArray(int length) {
         std::srand(std::time(nullptr));
         std::vector<int> arr(length);
         for (int i = 0; i < length; i++){
@@ -13,8 +13,9 @@ namespace {
         }
         return arr;
     }
-    auto ExpectEqCheck(std::vector<int> v1, std::vector<int> v2, int len){
-        for (int i = 0; i < len; i++){
+    auto ExpectEqCheck(std::vector<int>& v1, std::vector<int>& v2) {
+        ASSERT_EQ(v1.size(), v2.size());
+        for (long unsigned int i = 0; i < v1.size(); i++){
             EXPECT_EQ(v1[i], v2[i]);
         }
     }
@@ -24,17 +25,17 @@ TEST(ThirdLabTests, SingleThreadYieldsCorrectResults) {
     std::vector<int> arr1 = {99, 59, 19, 9, 1};
     MergeSortArr(arr1, 1);
     std::vector<int> out1 = {1, 9, 19, 59, 99};
-    ExpectEqCheck(arr1, out1, 5);
+    ExpectEqCheck(arr1, out1);
 
     std::vector<int> arr2 = {1,2,3,4,5,6,7,8,9,10};
     MergeSortArr(arr2, 1);
     std::vector<int> out2 = {1,2,3,4,5,6,7,8,9,10};
-    ExpectEqCheck(arr2, out2, 10);
+    ExpectEqCheck(arr2, out2);
 
     std::vector<int> arr3 = {5,38,79,85,2,1,3,2,99,13,11,17,85,62,4};
     MergeSortArr(arr3, 1);
     std::vector<int> out3 = {1,2,2,3,4,5,11,13,17,38,62,79,85,85,99};
-    ExpectEqCheck(arr3, out3, 15);
+    ExpectEqCheck(arr3, out3);
 }
 
 TEST(ThirdLabTest, ThreadConfigurations) {
@@ -45,7 +46,7 @@ TEST(ThirdLabTest, ThreadConfigurations) {
 
         for(int i = 2; i < maxThreadCount; ++i) {
             MergeSortArr(arr, i);
-            ExpectEqCheck(arr, arr1, length);
+            ExpectEqCheck(arr, arr1);
         }
         std::cout << '\n';
     };

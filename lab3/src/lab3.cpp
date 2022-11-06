@@ -5,8 +5,7 @@
 #include <pthread.h>
 #include <vector>
 
-struct TArg
-{
+struct TArg {
     std::vector<int> &a;
     long int i;
     int numbersPerThread;
@@ -20,8 +19,7 @@ void MergeSortArr(std::vector<int> &array, int threadCount) {
     int numbersPerThread = array.size() / threadCount;
     int offset = array.size() % threadCount;
 
-    if (threadCount > 1)
-    {
+    if (threadCount > 1) {
         std::vector<pthread_t> threads(threadCount);
         std::vector<TArg> arglist;
         arglist.reserve(threadCount);
@@ -30,7 +28,7 @@ void MergeSortArr(std::vector<int> &array, int threadCount) {
 
             arglist.push_back({array, i, numbersPerThread, offset, threadCount});
             int rc = pthread_create(&threads[i], NULL, ThreadMergeSort, &arglist[i]);
-            if (rc){
+            if (rc) {
                 std::cerr << "Thread create error";
             }
         }
@@ -40,24 +38,22 @@ void MergeSortArr(std::vector<int> &array, int threadCount) {
         }
         int low = numbersPerThread;
         int high;
-        for (int i = 1; i < threadCount; i++)
-        {
+        for (int i = 1; i < threadCount; i++) {
             high = low + numbersPerThread - 1;
-            if (i == (threadCount -1)){
+            if (i == (threadCount -1)) {
                 high = array.size() - 1;
             } 
             Merge(array, 0, low - 1, high);
             low += numbersPerThread;
         }
     }
-    else{
+    else {
         MergeSort(array, 0, array.size()-1);
     }
 }
 
 // Функция потока
-void *ThreadMergeSort(void* arg)
-{
+void *ThreadMergeSort(void* arg) {
     TArg* argum = (TArg*)arg;
     int thread_id = (long)argum->i;
     int left = thread_id * (argum->numbersPerThread);
