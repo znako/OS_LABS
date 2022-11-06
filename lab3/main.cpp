@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-
 int main() {
     int length, threadCount;
     std::cin >> length >> threadCount;
@@ -12,11 +11,11 @@ int main() {
         std::cin >> arr[i];
     }
 
-    auto result = MergeSortArr(arr, length, threadCount);
+    MergeSortArr(arr, threadCount);
 
     std::cout << "result ";
     for (int i = 0; i < length; i++){
-        std::cout << result[i] << ' ';
+        std::cout << arr[i] << ' ';
     }
     std::cout << '\n';
 }
