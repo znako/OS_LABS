@@ -16,16 +16,9 @@ int main(int argc, char* argv[])
         perror("too few arguments )");
         exit(EXIT_FAILURE);
     }
-
-    if (strlen(argv[0]) < 1)
-    {
-        perror("too few arguments )");
-        exit(EXIT_FAILURE);
-    }
-
+    
     char* strInput;
-
-    while ((strInput = ReadStringWithoutVowels(stdin)) != NULL)
+    while ((strInput = ReadString(stdin, &Filter)) != NULL)
     {
         write(1, strInput, strlen(strInput));
         free(strInput);

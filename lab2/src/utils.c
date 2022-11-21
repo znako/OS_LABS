@@ -1,6 +1,7 @@
 #include <utils.h>
 
-char* ReadString(FILE* stream) 
+
+char* ReadString(FILE* stream, TFilter filter) 
 {
     if(feof(stream)) {
         return NULL;
@@ -21,6 +22,9 @@ char* ReadString(FILE* stream)
 
     while ((readChar = getc(stream)) != EOF) 
     {
+        if(filter(readChar)){
+            continue;
+        }
         buffer[idx++] = readChar;
 
         if (idx == bufferSize) 
@@ -39,53 +43,22 @@ char* ReadString(FILE* stream)
     return buffer;
 }
 
-char* ReadStringWithoutVowels(FILE* stream) 
+int FilterZero(char c)
 {
-    if(feof(stream)) {
-        return NULL;
-    }
+    return c-c;
+}
 
-    const int chunkSize = 256;
-    char* buffer = (char*)malloc(chunkSize);
-    int bufferSize = chunkSize;
-
-    if(buffer == NULL) 
-    {
-        printf("Couldn't allocate buffer");
-        exit(EXIT_FAILURE);
-    }
-
-    int readChar;
-    int idx = 0;
-
+int Filter(char c)
+{
     char* vowels = {"AEIOUYaeiouy"};
 
-    while ((readChar = getc(stream)) != EOF) 
+    for (int i = 0; i < (int)strlen(vowels); ++i)
     {
-        int isVowel = 0;
-
-        for (int i = 0; i < (int)strlen(vowels); ++i){
-            if (readChar == vowels[i]){
-                isVowel = 1;
-            }
-        }
-
-        if (isVowel == 0){
-            buffer[idx++] = readChar;
-        }
-
-        if (idx == bufferSize) 
-        {
-            buffer = realloc(buffer, bufferSize + chunkSize);
-            bufferSize += chunkSize;
-        }
-
-        if (readChar == '\n') {
-            break;
+        if (c == vowels[i]){
+            return 1;
         }
     }
+    
+    return 0;
 
-    buffer[idx] = '\0';
-
-    return buffer;
 }

@@ -5,7 +5,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* ReadString(FILE* stream);
-char* ReadStringWithoutVowels(FILE* stream);
+typedef int(*TFilter)(char);
+
+char* ReadString(FILE* stream, TFilter filter);
+int FilterZero(char c);
+int Filter(char c);
 
 #endif

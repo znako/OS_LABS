@@ -2,18 +2,13 @@
 #include "utils.h"
 
 int ChoosePipe(int len){
-    int check = 0;
-    if ((len - 1) % 2 != 0)
-    {
-        check = 1; 
-    }
-    return check;
+    return (len - 1) % 2 != 0;
 }
 
 void ParentRoutine(char* pathToChild, FILE* fin)
 {
-    char* fileName1 = ReadString(fin);
-    char* fileName2 = ReadString(fin);
+    char* fileName1 = ReadString(fin, &FilterZero);
+    char* fileName2 = ReadString(fin, &FilterZero);
 
     fileName1[strlen(fileName1) - 1] = '\0';
     fileName2[strlen(fileName2) - 1] = '\0';
@@ -29,7 +24,7 @@ void ParentRoutine(char* pathToChild, FILE* fin)
         exit(EXIT_FAILURE);
     }
 
-    pid_t outputFile1, outputFile2;
+    int outputFile1, outputFile2;
 
     if ((outputFile1 = open(fileName1, O_WRONLY | O_CREAT, S_IRWXU)) < 0) 
     {
@@ -108,7 +103,7 @@ void ParentRoutine(char* pathToChild, FILE* fin)
 
         char* strInput = NULL;
 
-        while ((strInput = ReadString(fin)) != NULL)
+        while ((strInput = ReadString(fin, &FilterZero)) != NULL)
         {
             int strSize = strlen(strInput);
 
@@ -125,14 +120,6 @@ void ParentRoutine(char* pathToChild, FILE* fin)
             }
 
             free(strInput);
-        }
-
-        if (strInput == NULL)
-        {
-            char terminator = '\0';
-
-            write(fd1[1], &terminator, 1);
-            write(fd2[1], &terminator, 1);
         }
 
         close(fd1[1]);

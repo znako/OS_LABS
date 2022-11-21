@@ -47,6 +47,7 @@ TEST(SecondLabTest, TestWithIO)
         "Wrk",
         "mt"
     };
+
     std::ofstream fout(fileWithInput);
 
     fout << fileWithOutput1 << '\n';
@@ -92,10 +93,10 @@ TEST(SecondLabTest, TestWithIO)
     std::stable_sort(expectedOutput2.begin(), expectedOutput2.end());
 
     for (int i = 0; i < (int)vecRes1.size(); ++i){
-        EXPECT_EQ(vecRes1[i].c_str(), expectedOutput1[i].c_str());
+        EXPECT_EQ(vecRes1[i], expectedOutput1[i]);
     }
     for (int i = 0; i < (int)vecRes2.size(); ++i){
-        EXPECT_EQ(vecRes2[i].c_str(), expectedOutput2[i].c_str());
+        EXPECT_EQ(vecRes2[i], expectedOutput2[i]);
     }
 
     auto removeIfExists = [](const char* path) {
