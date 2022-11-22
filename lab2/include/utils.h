@@ -8,7 +8,7 @@
 typedef int(*TFilter)(char);
 
 char* ReadString(FILE* stream, TFilter filter);
-int FilterZero(char c);
-int Filter(char c);
+int FilterNone(char c);
+int FilterVowels(char c);
 
 #endif

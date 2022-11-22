@@ -77,11 +77,11 @@ TEST(SecondLabTest, TestWithIO)
     std::vector<std::string> vecRes2;
 
     while (fin1 >> strRes1){
-        vecRes1.push_back(strRes1);
+        vecRes1.push_back(std::move(strRes1));
     }
     
     while (fin2 >> strRes2){
-        vecRes2.push_back(strRes2);
+        vecRes2.push_back(std::move(strRes2));
     }
 
     fin1.close();

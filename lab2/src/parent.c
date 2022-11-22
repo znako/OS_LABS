@@ -7,8 +7,8 @@ int ChoosePipe(int len){
 
 void ParentRoutine(char* pathToChild, FILE* fin)
 {
-    char* fileName1 = ReadString(fin, &FilterZero);
-    char* fileName2 = ReadString(fin, &FilterZero);
+    char* fileName1 = ReadString(fin, &FilterNone);
+    char* fileName2 = ReadString(fin, &FilterNone);
 
     fileName1[strlen(fileName1) - 1] = '\0';
     fileName2[strlen(fileName2) - 1] = '\0';
@@ -103,7 +103,7 @@ void ParentRoutine(char* pathToChild, FILE* fin)
 
         char* strInput = NULL;
 
-        while ((strInput = ReadString(fin, &FilterZero)) != NULL)
+        while ((strInput = ReadString(fin, &FilterNone)) != NULL)
         {
             int strSize = strlen(strInput);
 

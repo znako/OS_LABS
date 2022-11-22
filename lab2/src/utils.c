@@ -43,12 +43,12 @@ char* ReadString(FILE* stream, TFilter filter)
     return buffer;
 }
 
-int FilterZero(char c)
+int FilterNone(char c)
 {
     return c-c;
 }
 
-int Filter(char c)
+int FilterVowels(char c)
 {
     char* vowels = {"AEIOUYaeiouy"};
 
@@ -58,7 +58,5 @@ int Filter(char c)
             return 1;
         }
     }
-    
     return 0;
-
 }

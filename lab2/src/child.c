@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     }
     
     char* strInput;
-    while ((strInput = ReadString(stdin, &Filter)) != NULL)
+    while ((strInput = ReadString(stdin, &FilterVowels)) != NULL)
     {
         write(1, strInput, strlen(strInput));
         free(strInput);
