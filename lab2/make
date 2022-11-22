@@ -1,0 +1,47 @@
+#!/bin/bash
+
+exe_file="lab2"
+main_dir=$(pwd)
+tmp_dir="${main_dir}/build"
+
+mkdir ${tmp_dir}
+cd ${tmp_dir}
+
+cmake ${main_dir}
+make
+
+mv ${exe_file} ${main_dir}
+mv child ${main_dir}
+
+cd ${main_dir}
+
+while [ -n "$1" ]
+do
+    case "$1" in
+        -c) 
+            clear
+        ;;
+        -d)
+            rm -rf ${tmp_dir}
+        ;;
+        -input)
+            input_src="in/$2"
+            ./${exe_file} < ${input_src}
+            rm -rf ${exe_file}
+        ;;
+        -output)
+            output_src="out/$2"
+            ./${exe_file} > ${output_src}
+            rm -rf ${exe_file}
+        ;;
+        -io)
+            input_src="in/$2"
+            output_src="out/$3"
+            ./${exe_file} < ${input_src} > ${output_src}
+        ;;
+        *)
+            
+        ;;
+    esac
+    shift
+done
