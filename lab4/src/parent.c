@@ -3,13 +3,6 @@
 #include "semaphore.h"
 #include "signal.h"
 
-#define STR_LEN 128
-#define STR_MAX_QUANTITY 100
-
-#define BUFFER_SIZE 128
-
-#define MAPPED_SIZE STR_LEN * STR_MAX_QUANTITY
-
 char* ReadString(FILE* stream) 
 {
     if(feof(stream)) {
@@ -55,6 +48,8 @@ int ChoosePipe(int len){
 
 void ParentRoutine(FILE* fin)
 {
+    const int STR_LEN = 128;
+    const int MAPPED_SIZE = sizeof(char);
 
     char* fileName1 = ReadString(fin);
     char* fileName2 = ReadString(fin);
@@ -121,7 +116,6 @@ void ParentRoutine(FILE* fin)
             exit(EXIT_FAILURE);
         }
 
-        int offset = 0;
 
         sem_t *semaphore = sem_open(sem_file1, 0);
 
@@ -129,20 +123,31 @@ void ParentRoutine(FILE* fin)
         {
             sem_wait(semaphore);
 
-            if (mapped1[offset] == '\0')
+            if (mapped1[0] == '\0')
             {
                 break;
             }
 
             int i = 0;
 
-            char strArray[STR_LEN];
+            char* strArray = (char*)malloc(STR_LEN);
+            int len = STR_LEN;
 
             do{
 
-                strArray[i] = mapped1[offset + i];
-            } while (mapped1[offset + i++] != '\n');
+                strArray[i] = mapped1[i];
+                
+                if (i == len)
+                {
+                    strArray = realloc(strArray, len + STR_LEN);
+                    len += STR_LEN; 
+                }
+            } while (mapped1[i++] != '\n');
 
+            for (int j = 0; j < i; ++j)
+            {
+                printf("%c", strArray[j]);
+            }
             char* vowels = {"AEIOUYaeiouy"};
 
             for (int j = 0; j < i; ++j)
@@ -161,9 +166,9 @@ void ParentRoutine(FILE* fin)
                     write(1, &strArray[j], 1);
                 }
             }
-            offset += i;
-
+            free(strArray);
         }
+        
         close(outputFile1);
     }
 
@@ -175,8 +180,6 @@ void ParentRoutine(FILE* fin)
             exit(EXIT_FAILURE);
         }
 
-        int offset = 0;
-
         sem_t *semaphore = sem_open(sem_file2, 0);
 
         while(1)
@@ -184,18 +187,26 @@ void ParentRoutine(FILE* fin)
             
             sem_wait(semaphore);
 
-            if (mapped2[offset] == '\0')
+            if (mapped2[0] == '\0')
             {
                 break;
             }
 
             int i = 0;
 
-            char strArray[STR_LEN];
+            char* strArray = (char*)malloc(STR_LEN);
+            int len = STR_LEN;
 
             do{
-                strArray[i] = mapped2[offset + i];
-            } while (mapped2[offset + i++] != '\n');
+
+                strArray[i] = mapped2[i];
+                
+                if (i == len)
+                {
+                    strArray = realloc(strArray, len + STR_LEN);
+                    len += STR_LEN; 
+                }
+            } while (mapped2[i++] != '\n');
 
             char* vowels = {"AEIOUYaeiouy"};
 
@@ -215,10 +226,8 @@ void ParentRoutine(FILE* fin)
                     write(1, &strArray[j], 1);
                 }
             }
-
-            offset += i;
+            free(strArray);
         }
-        
         close(outputFile2);
     }
     else
@@ -236,35 +245,34 @@ void ParentRoutine(FILE* fin)
             {
                 if (ChoosePipe(strSize))
                 {
+                    stat_counter1 = 0;
+
                     for (int j = 0; j < strSize; j++) {
-                        mapped1[stat_counter1 + j] = strInput[j];
+                        mapped1[stat_counter1++] = strInput[j];
                     }
 
                     sem_post(semaphore1);
-                    stat_counter1 += strSize;
 
                     
                 }
                 else 
                 {
+                    stat_counter2 = 0;
+
                     for (int j = 0; j < strSize; j++) {
-                        mapped2[stat_counter2 + j] = strInput[j];
+                        mapped2[stat_counter2++] = strInput[j];
                     }
                     sem_post(semaphore2);
-                    stat_counter2 += strSize;
                 }
             }
 
             free(strInput);
         }
-        mapped1[stat_counter1] = '\0';
-        mapped2[stat_counter2] = '\0';
+        mapped1[0] = '\0';
+        mapped2[0] = '\0';
         sem_post(semaphore1);
         sem_post(semaphore2);
-
-        
     }
-    
     munmap(mapped1, MAPPED_SIZE);
     munmap(mapped2, MAPPED_SIZE);
     sem_close(semaphore1);
