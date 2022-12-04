@@ -144,10 +144,6 @@ void ParentRoutine(FILE* fin)
                 }
             } while (mapped1[i++] != '\n');
 
-            for (int j = 0; j < i; ++j)
-            {
-                printf("%c", strArray[j]);
-            }
             char* vowels = {"AEIOUYaeiouy"};
 
             for (int j = 0; j < i; ++j)
