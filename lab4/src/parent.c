@@ -275,6 +275,6 @@ void ParentRoutine(FILE* fin)
     sem_close(semaphore2);
     sem_unlink(sem_file1);
     sem_unlink(sem_file2);
-    //kill(pid1, SIGKILL);
-    //kill(pid2, SIGKILL);
+    kill(pid1, SIGKILL);
+    kill(pid2, SIGKILL);
 }
