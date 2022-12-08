@@ -49,7 +49,7 @@ int ChoosePipe(int len){
 void ParentRoutine(FILE* fin)
 {
     const int STR_LEN = 128;
-    const int MAPPED_SIZE = sizeof(char);
+    const int MAPPED_SIZE = 512;
 
     char* fileName1 = ReadString(fin);
     char* fileName2 = ReadString(fin);
@@ -275,6 +275,6 @@ void ParentRoutine(FILE* fin)
     sem_close(semaphore2);
     sem_unlink(sem_file1);
     sem_unlink(sem_file2);
-    kill(pid1, SIGKILL);
-    kill(pid2, SIGKILL);
+    //kill(pid1, SIGKILL);
+    //kill(pid2, SIGKILL);
 }
